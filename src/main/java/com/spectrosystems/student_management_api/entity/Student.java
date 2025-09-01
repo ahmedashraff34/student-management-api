@@ -19,10 +19,12 @@ public class Student {
 
     @NotBlank   (message = "First name is required")
     @Size       (min = 3, max = 15, message = "First name must be 3-15 characters")
+    @Pattern    (regexp = "^[A-Za-z]+$", message = "First name must contain only letters")
     String firstName;
 
     @NotBlank   (message = "Last name is required")
     @Size       (min = 3, max = 15, message = "Last name must be 3-15 characters")
+    @Pattern    (regexp = "^[A-Za-z]+$", message = "Last name must contain only letters")
     String lastName;
 
     @NotBlank   (message = "Email is required")
