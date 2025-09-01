@@ -43,8 +43,14 @@ public class StudentService {
         student.setLastName(request.getLastName());
         student.setEmail(request.getEmail());
         student.setDateOfBirth(request.getDateOfBirth());
-
-        return studentRepository.save(student);
+        try {
+            return studentRepository.save(student);
+        } catch (DataIntegrityViolationException ex) {
+            if (ex.getMostSpecificCause().getMessage().toLowerCase().contains("email")) {
+                throw new DuplicateEmailException("Email already exists");
+            }
+            throw ex;
+        }
     }
 
     public void deleteStudent(Long id) {
