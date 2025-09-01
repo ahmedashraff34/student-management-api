@@ -1,11 +1,13 @@
 package com.spectrosystems.student_management_api.service;
 
 import com.spectrosystems.student_management_api.entity.Student;
+import com.spectrosystems.student_management_api.exception.DuplicateEmailException;
+import com.spectrosystems.student_management_api.exception.StudentNotFoundException;
 import com.spectrosystems.student_management_api.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,16 +21,23 @@ public class StudentService {
 
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
     }
 
     public Student addStudent(Student student) {
-        return studentRepository.save(student);
+        try {
+            return studentRepository.save(student);
+        } catch (DataIntegrityViolationException ex) {
+            if (ex.getMostSpecificCause().getMessage().toLowerCase().contains("email")) {
+                throw new DuplicateEmailException("Email already exists");
+            }
+            throw ex;
+        }
     }
 
     public Student updateStudent(Long id, Student request) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
 
         student.setFirstName(request.getFirstName());
         student.setLastName(request.getLastName());
@@ -40,7 +49,7 @@ public class StudentService {
 
     public void deleteStudent(Long id) {
         if (!studentRepository.existsById(id)) {
-            throw new NoSuchElementException("Student not found");
+            throw new StudentNotFoundException("Student with id: " + id + " not found");
         }
         studentRepository.deleteById(id);
     }
