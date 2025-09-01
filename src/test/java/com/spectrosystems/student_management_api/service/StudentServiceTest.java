@@ -1,7 +1,10 @@
 package com.spectrosystems.student_management_api.service;
+import com.spectrosystems.student_management_api.dto.StudentRequest;
+import com.spectrosystems.student_management_api.dto.StudentResponse;
 import com.spectrosystems.student_management_api.entity.Student;
 import com.spectrosystems.student_management_api.exception.DuplicateEmailException;
 import com.spectrosystems.student_management_api.exception.StudentNotFoundException;
+import com.spectrosystems.student_management_api.mapper.StudentMapper;
 import com.spectrosystems.student_management_api.repository.StudentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,13 +37,13 @@ public class StudentServiceTest {
 
         when(studentRepository.findAll()).thenReturn(students);
 
-        List<Student> result = studentService.getAllStudents();
+        List<StudentResponse> result = studentService.getAllStudents();
         Assertions.assertEquals(students.size(), result.size());
         verify(studentRepository, times(1)).findAll();
     }
 
     @Test
-    void getStudentById_whenStudentExists_shouldReturnStudent() {
+    void getStudentById_whenStudentExists_shouldReturnStudentResponse() {
         Student student = Student.builder()
                 .id(1L)
                 .firstName("Ahmed")
@@ -51,66 +54,98 @@ public class StudentServiceTest {
 
         when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
 
-        Student result = studentService.getStudentById(student.getId());
-        Assertions.assertEquals(student, result);
+        StudentResponse result = studentService.getStudentById(student.getId());
+
+        Assertions.assertEquals(student.getId(), result.getId());
+        Assertions.assertEquals(student.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(student.getLastName(), result.getLastName());
+        Assertions.assertEquals(student.getEmail(), result.getEmail());
+        Assertions.assertEquals(student.getDateOfBirth(), result.getDateOfBirth());
+
         verify(studentRepository, times(1)).findById(student.getId());
     }
 
     @Test
     void getStudentById_whenStudentDoesNotExist_shouldThrowStudentNotFoundException() {
-
         when(studentRepository.findById(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(StudentNotFoundException.class, () -> {
             studentService.getStudentById(1L);
         });
+
         verify(studentRepository, times(1)).findById(1L);
     }
 
+
     @Test
     void addStudent_whenNewEmail_shouldSaveStudent() {
-        Student student = Student.builder()
+        StudentRequest studentRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
-        when(studentRepository.save(student)).thenReturn(student);
-        Student savedStudent = studentService.addStudent(student);
-        Assertions.assertNotNull(savedStudent);
-        Assertions.assertEquals(student,savedStudent);
-        verify(studentRepository,times(1)).save(student);
+
+        Student savedStudent = Student.builder()
+                .id(1L)
+                .firstName(studentRequest.getFirstName())
+                .lastName(studentRequest.getLastName())
+                .email(studentRequest.getEmail())
+                .dateOfBirth(studentRequest.getDateOfBirth())
+                .build();
+
+        when(studentRepository.save(StudentMapper.toStudent(studentRequest))).thenReturn(savedStudent);
+
+        StudentResponse result = studentService.addStudent(studentRequest);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(savedStudent.getId(), result.getId());
+        Assertions.assertEquals(savedStudent.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(savedStudent.getLastName(), result.getLastName());
+        Assertions.assertEquals(savedStudent.getEmail(), result.getEmail());
+        Assertions.assertEquals(savedStudent.getDateOfBirth(), result.getDateOfBirth());
+
+        verify(studentRepository, times(1)).save(StudentMapper.toStudent(studentRequest));
     }
 
     @Test
     void addStudent_whenEmailAlreadyExists_shouldThrowDuplicateEmailException() {
-        Student student = Student.builder()
+        StudentRequest studentRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
-        when(studentRepository.save(student)).thenThrow(new DataIntegrityViolationException("Constraint violation",new Throwable("Duplicated Email")));
+
+        when(studentRepository.save(StudentMapper.toStudent(studentRequest)))
+                .thenThrow(new DataIntegrityViolationException("Constraint violation", new Throwable("Duplicated Email")));
+
         Assertions.assertThrows(DuplicateEmailException.class, () -> {
-            studentService.addStudent(student);
+            studentService.addStudent(studentRequest);
         });
-        verify(studentRepository,times(1)).save(student);
+
+        verify(studentRepository, times(1)).save(StudentMapper.toStudent(studentRequest));
     }
 
     @Test
     void addStudent_whenDatabaseError_shouldThrowDataIntegrityViolationException() {
-        Student student = Student.builder()
+        StudentRequest studentRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
-        when(studentRepository.save(student)).thenThrow(new DataIntegrityViolationException("Constraint violation",new Throwable("Internal DB Error")));
+
+        when(studentRepository.save(StudentMapper.toStudent(studentRequest)))
+                .thenThrow(new DataIntegrityViolationException("Constraint violation", new Throwable("Internal DB Error")));
+
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
-            studentService.addStudent(student);
+            studentService.addStudent(studentRequest);
         });
-        verify(studentRepository,times(1)).save(student);
+
+        verify(studentRepository, times(1)).save(StudentMapper.toStudent(studentRequest));
     }
+
 
     @Test
     void updateStudent_whenStudentExists_shouldUpdateAndReturnStudent() {
@@ -119,26 +154,38 @@ public class StudentServiceTest {
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
-        Student updatedStudent = Student.builder()
+        StudentRequest updatedRequest = StudentRequest.builder()
+                .firstName("Ahmed")
+                .lastName("Ashraf")
+                .email("NEWahmed@example.com")
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
+                .build();
+
+        Student updatedStudentEntity = Student.builder()
                 .id(1L)
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("NEWahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
+                .build();
+
+        StudentResponse expectedResponse = StudentResponse.builder()
+                .id(1L)
+                .firstName("Ahmed")
+                .lastName("Ashraf")
+                .email("NEWahmed@example.com")
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
         when(studentRepository.findById(oldStudent.getId())).thenReturn(Optional.of(oldStudent));
-        when(studentRepository.save(oldStudent)).thenReturn(oldStudent);
+        when(studentRepository.save(oldStudent)).thenReturn(updatedStudentEntity);
 
-        Student result = studentService.updateStudent(oldStudent.getId(), updatedStudent);
+        StudentResponse result = studentService.updateStudent(oldStudent.getId(), updatedRequest);
 
-        Assertions.assertEquals(updatedStudent.getEmail(), result.getEmail());
-        Assertions.assertEquals(updatedStudent.getFirstName(), result.getFirstName());
-        Assertions.assertEquals(updatedStudent.getLastName(), result.getLastName());
-        Assertions.assertEquals(updatedStudent.getDateOfBirth(), result.getDateOfBirth());
+        Assertions.assertEquals(expectedResponse, result);
 
         verify(studentRepository, times(1)).findById(oldStudent.getId());
         verify(studentRepository, times(1)).save(oldStudent);
@@ -146,29 +193,21 @@ public class StudentServiceTest {
 
     @Test
     void updateStudent_whenStudentDoesNotExist_shouldThrowStudentNotFoundException() {
-        Student oldStudent = Student.builder()
-                .id(1L)
-                .firstName("Ahmed")
-                .lastName("Ashraf")
-                .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
-                .build();
-
-        Student updatedStudent = Student.builder()
-                .id(1L)
+        StudentRequest updatedRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("NEWahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
-        when(studentRepository.findById(oldStudent.getId())).thenReturn(Optional.empty());
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(StudentNotFoundException.class, () -> {
-            studentService.updateStudent(oldStudent.getId(), updatedStudent);
+            studentService.updateStudent(1L, updatedRequest);
         });
-        verify(studentRepository, times(1)).findById(oldStudent.getId());
-        verify(studentRepository, times(0)).save(oldStudent);
+
+        verify(studentRepository, times(1)).findById(1L);
+        verify(studentRepository, times(0)).save(any());
     }
 
     @Test
@@ -178,23 +217,24 @@ public class StudentServiceTest {
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
-        Student updatedStudent = Student.builder()
-                .id(1L)
+        StudentRequest updatedRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("NEWahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
         when(studentRepository.findById(oldStudent.getId())).thenReturn(Optional.of(oldStudent));
-        when(studentRepository.save(oldStudent)).thenThrow(new DataIntegrityViolationException("Constraint violation",new Throwable("Duplicated Email")));
+        when(studentRepository.save(oldStudent))
+                .thenThrow(new DataIntegrityViolationException("Constraint violation", new Throwable("Duplicated Email")));
 
         Assertions.assertThrows(DuplicateEmailException.class, () -> {
-            studentService.updateStudent(oldStudent.getId(), updatedStudent);
+            studentService.updateStudent(oldStudent.getId(), updatedRequest);
         });
+
         verify(studentRepository, times(1)).findById(oldStudent.getId());
         verify(studentRepository, times(1)).save(oldStudent);
     }
@@ -206,23 +246,24 @@ public class StudentServiceTest {
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("ahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
-        Student updatedStudent = Student.builder()
-                .id(1L)
+        StudentRequest updatedRequest = StudentRequest.builder()
                 .firstName("Ahmed")
                 .lastName("Ashraf")
                 .email("NEWahmed@example.com")
-                .dateOfBirth(LocalDate.of(2002,4,3))
+                .dateOfBirth(LocalDate.of(2002, 4, 3))
                 .build();
 
         when(studentRepository.findById(oldStudent.getId())).thenReturn(Optional.of(oldStudent));
-        when(studentRepository.save(oldStudent)).thenThrow(new DataIntegrityViolationException("Constraint violation",new Throwable("Internal DB Error")));
+        when(studentRepository.save(oldStudent))
+                .thenThrow(new DataIntegrityViolationException("Constraint violation", new Throwable("Internal DB Error")));
 
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
-            studentService.updateStudent(oldStudent.getId(), updatedStudent);
+            studentService.updateStudent(oldStudent.getId(), updatedRequest);
         });
+
         verify(studentRepository, times(1)).findById(oldStudent.getId());
         verify(studentRepository, times(1)).save(oldStudent);
     }
