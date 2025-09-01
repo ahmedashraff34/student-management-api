@@ -4,7 +4,6 @@ import com.spectrosystems.student_management_api.entity.Student;
 import com.spectrosystems.student_management_api.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 

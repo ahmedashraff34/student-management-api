@@ -2,6 +2,7 @@ package com.spectrosystems.student_management_api.controller;
 
 import com.spectrosystems.student_management_api.entity.Student;
 import com.spectrosystems.student_management_api.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +27,12 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student request) {
+    public Student addStudent(@Valid @RequestBody Student request) {
         return studentService.addStudent(request);
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Long id, @RequestBody Student request) {
+    public Student updateStudent(@PathVariable Long id,@Valid @RequestBody Student request) {
         return studentService.updateStudent(id, request);
     }
 
