@@ -1,6 +1,5 @@
-package com.spectrosystems.student_management_api.entity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+package com.spectrosystems.student_management_api.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,16 +8,12 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StudentResponse {
     long id;
     String firstName;
     String lastName;
-    @Column(unique = true)
     String email;
     LocalDate dateOfBirth;
 }

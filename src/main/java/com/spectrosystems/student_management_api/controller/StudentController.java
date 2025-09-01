@@ -1,5 +1,7 @@
 package com.spectrosystems.student_management_api.controller;
 
+import com.spectrosystems.student_management_api.dto.StudentRequest;
+import com.spectrosystems.student_management_api.dto.StudentResponse;
 import com.spectrosystems.student_management_api.entity.Student;
 import com.spectrosystems.student_management_api.service.StudentService;
 import jakarta.validation.Valid;
@@ -17,22 +19,22 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<Student> getAllStudents() {
+    public List<StudentResponse> getAllStudents() {
         return studentService.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Long id) {
+    public StudentResponse getStudent(@PathVariable Long id) {
         return studentService.getStudentById(id);
     }
 
     @PostMapping
-    public Student addStudent(@Valid @RequestBody Student request) {
+    public StudentResponse addStudent(@Valid @RequestBody StudentRequest request) {
         return studentService.addStudent(request);
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Long id,@Valid @RequestBody Student request) {
+    public StudentResponse updateStudent(@PathVariable Long id,@Valid @RequestBody StudentRequest request) {
         return studentService.updateStudent(id, request);
     }
 
