@@ -31,6 +31,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ResponseEntity<CustomError> handleDuplicateUsername(DuplicateUsernameException ex) {
+        CustomError error = new CustomError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
