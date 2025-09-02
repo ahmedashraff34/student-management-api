@@ -2,7 +2,6 @@ package com.spectrosystems.student_management_api.controller;
 
 import com.spectrosystems.student_management_api.dto.StudentRequest;
 import com.spectrosystems.student_management_api.dto.StudentResponse;
-import com.spectrosystems.student_management_api.entity.Student;
 import com.spectrosystems.student_management_api.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

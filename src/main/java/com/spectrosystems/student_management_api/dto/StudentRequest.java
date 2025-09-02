@@ -1,6 +1,5 @@
 package com.spectrosystems.student_management_api.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
