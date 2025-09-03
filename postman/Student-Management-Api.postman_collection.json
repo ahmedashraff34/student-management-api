@@ -1,0 +1,285 @@
+{
+	"info": {
+		"_postman_id": "64f02407-5565-47f5-8362-b4bb205b0329",
+		"name": "Student-Management-Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31543117",
+		"_collection_link": "https://grey-escape-16568.postman.co/workspace/My-Workspace~51c78fe8-3f28-47bd-86cd-87ad63ebd555/collection/31543117-64f02407-5565-47f5-8362-b4bb205b0329?action=share&source=collection_link&creator=31543117"
+	},
+	"item": [
+		{
+			"name": "getStudents",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1lZHVzZXIiLCJpYXQiOjE3NTY5MTUzNzAsImV4cCI6MTc1NjkxODk3MH0.gFIdmB3KgO1Z3oEmGAY7XE2BCMTQZICyY5HcSEJiSzM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1lZHVzZXIiLCJpYXQiOjE3NTY5MTExMDcsImV4cCI6MTc1NjkxNDcwN30.ZbNnF7K6npDn0aFuP3zQnjE2WKF7q1VuuOGzV2BYWBM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addStudent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1lZHVzZXIiLCJpYXQiOjE3NTY5MTUzNzAsImV4cCI6MTc1NjkxODk3MH0.gFIdmB3KgO1Z3oEmGAY7XE2BCMTQZICyY5HcSEJiSzM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Ashraf\",\n  \"email\": \"ahmedashraf@example.com\",\n  \"dateOfBirth\": \"2002-05-15\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateStudent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1lZGFkbWluIiwiaWF0IjoxNzU2OTExMTA5LCJleHAiOjE3NTY5MTQ3MDl9.xqfIJZ1XtcCadja958LsUH8w0WChCYQazpmQmhFofHE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Ashraf\",\n  \"email\": \"updated_ahmedashraf@example.com\",\n  \"dateOfBirth\": \"2002-05-15\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteStudent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1lZGFkbWluIiwiaWF0IjoxNzU2OTExMTA5LCJleHAiOjE3NTY5MTQ3MDl9.xqfIJZ1XtcCadja958LsUH8w0WChCYQazpmQmhFofHE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserRegister",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\":\"Ashraf\",\n  \"username\": \"ahmeduser\",\n  \"email\": \"ahmeduser@example.com\",\n  \"password\": \"StrongPass123\",\n  \"role\": \"USER\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AdminRegister",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\":\"Ashraf\",\n  \"username\": \"ahmedadmin\",\n  \"email\": \"ahmedadmin@example.com\",\n  \"password\": \"StrongPass123\",\n  \"role\": \"ADMIN\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"ahmeduser\",\n  \"password\": \"StrongPass123\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/login?usernameOrEmail=ahmeduser&password=StrongPass123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login"
+					],
+					"query": [
+						{
+							"key": "usernameOrEmail",
+							"value": "ahmeduser"
+						},
+						{
+							"key": "password",
+							"value": "StrongPass123"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
