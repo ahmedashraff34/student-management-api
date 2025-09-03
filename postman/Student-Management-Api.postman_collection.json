@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "getStudents",
+			"name": "RetreiveStudents",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -38,7 +38,7 @@
 			"response": []
 		},
 		{
-			"name": "getById",
+			"name": "RetreiveById",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -69,7 +69,7 @@
 			"response": []
 		},
 		{
-			"name": "addStudent",
+			"name": "CreateStudent",
 			"request": {
 				"auth": {
 					"type": "bearer",
